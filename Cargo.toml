@@ -5,7 +5,3 @@ authors = ["co1row.jp <co1row.jp@gmail.com>"]
 
 [dependencies]
 getopts = "0.2"
-
-[lib]
-name = "help"
-path = "src/help/lib.rs"

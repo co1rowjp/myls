@@ -3,7 +3,7 @@ use getopts::Options;
 
 pub fn print_usage(program: &str, opts: Options) {
     let brief = format!(
-        "Usage: {} [OPTION]... [FILE]... \
+        "Usage: {} [OPTION]... [FILE]... \n
         List information about the FILEs (the current directory by default). \
         Sort entries alphabetically if none of -cftuvSUX nor --sort. \
         \
