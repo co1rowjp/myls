@@ -1,5 +1,6 @@
 extern crate getopts;
 use getopts::Options;
+use getopts::Matches;
 
 pub fn print_usage(program: &str, opts: Options) {
     let brief = format!(
@@ -115,6 +116,17 @@ pub fn make_options() -> Options {
     return opts;
 }
 
+#[derive(Debug)]
+pub struct LsOptions {
+    pub all: bool,
+    pub almost_all: bool,
+}
 
-
-
+impl LsOptions {
+    pub fn new(matches: &Matches) -> LsOptions {
+        LsOptions {
+            all: matches.opt_present("a"),
+            almost_all: matches.opt_present("A"),
+        }
+    }
+}

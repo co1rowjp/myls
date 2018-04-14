@@ -1,9 +1,10 @@
 extern crate getopts;
+use std::fs::Metadata;
 use std::env;
 use std::path::Path;
-use std::fs;
 use getopts::Matches;
 mod options;
+use options::LsOptions;
 
 fn print_not_exists(paths: &Vec<&Path>) {
     for path in paths.iter().filter(|e| ! e.exists()) {
@@ -11,35 +12,63 @@ fn print_not_exists(paths: &Vec<&Path>) {
     }
 }
 
-fn print_file(f: &Path, matches: &Matches) {
-    print!("{}  ", f.file_name().unwrap().to_str().unwrap());
+fn print_file<P>(path_arg: P, ls_options: &LsOptions) 
+    where P: AsRef<Path>
+{
+    let path = path_arg.as_ref();
+    let file_name = path.file_name().unwrap().to_str().unwrap();
+    print_file_impl(file_name, None, ls_options);
 }
 
-fn print_dir(f: &Path, matches: &Matches, show_dir_name: bool) {
-    if show_dir_name {
-        println!("{}:", f.to_str().unwrap());
+fn print_file_impl(file_name: &str, _meta: Option<Metadata>, ls_options: &LsOptions) {
+    if ! (ls_options.all || ls_options.almost_all) && file_name.starts_with(".") {
+        return;
     }
-    for n in fs::read_dir(f.to_str().unwrap()).unwrap() {
-        print_file(n.unwrap().path().as_path(), matches);
+    print!("{}  ", file_name);   
+}
+
+fn print_dir<P>(path_arg: P, ls_options: &LsOptions, show_dir_name: bool) 
+    where P: AsRef<Path>
+{
+    let path = path_arg.as_ref();
+    if show_dir_name {
+        println!("{}:", path.to_str().unwrap());
+    }
+
+    if ls_options.all {
+        if let Ok(meta) = path.metadata() {
+            print_file_impl(".", Some(meta), ls_options); // print current dir
+        }
+        if let Some(parent) = path.parent() {
+            if let Ok(meta) = parent.metadata() {
+                print_file_impl("..", Some(meta), ls_options); // print parent dir
+            }
+        }
+    }
+   
+    for entry in path.read_dir().expect("read_dir call failed") {
+        if let Ok(entry) = entry {
+            print_file(entry.path(), ls_options);
+        }
     }
     println!("");
 }
 
 fn print(matches: &Matches) -> Result<(), String> {
+    let ls_options = LsOptions::new(matches);
     if matches.free.len() == 0 {
-        for n in fs::read_dir("").unwrap() {
-            print_file(n.unwrap().path().as_path(), matches);
-        }
+        let current_dir = env::current_dir().unwrap();
+        print_dir(current_dir, &ls_options, false);
     } else {
         let argument_paths = matches.free.iter().map(|e| Path::new(e)).collect::<Vec<_>>();
         let show_dir_name = matches.free.len() > 1;
-        print_not_exists(&argument_paths);
+        print_not_exists(&argument_paths);  
         for n in argument_paths.iter().filter(|e| e.exists()) {
             if n.is_dir() {
-                print_dir(n, matches, show_dir_name);
+                print_dir(n, &ls_options, show_dir_name);
                 println!("");
             } else {
-                print_file(n, matches);
+                print_file(n, &ls_options);
             }
         }
     }
@@ -67,6 +96,10 @@ fn main() {
         println!("written by co1row");
         return;
     }
-    print(&matches);
+    
+    match print(&matches) {
+        Ok(()) => (),
+        Err(e) => print!("{}", e),
+    }
     return;
 }
