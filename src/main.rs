@@ -24,7 +24,11 @@ fn print_file_impl(file_name: &str, _meta: Option<Metadata>, ls_options: &LsOpti
     if ! (ls_options.all || ls_options.almost_all) && file_name.starts_with(".") {
         return;
     }
-    print!("{}  ", file_name);   
+    if ls_options.long_listing_format {
+            
+    } else {
+        print!("{}  ", file_name);   
+    }
 }
 
 fn print_dir<P>(path_arg: P, ls_options: &LsOptions, show_dir_name: bool) 
