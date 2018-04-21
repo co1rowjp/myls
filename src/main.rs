@@ -21,14 +21,14 @@ fn print_file<P>(path_arg: P, ls_options: &LsOptions)
 }
 
 fn print_file_impl(file_name: &str, _meta: Option<Metadata>, ls_options: &LsOptions) {
-    if ! (ls_options.all || ls_options.almost_all) && file_name.starts_with(".") {
+    if is_hidden_file(file_name, ls_options) {
         return;
     }
-    if ls_options.long_listing_format {
-            
-    } else {
-        print!("{}  ", file_name);   
-    }
+    print!("{}  ", file_name);   
+}
+
+fn is_hidden_file(file_name: &str, ls_options: &LsOptions) -> bool {
+    return ! (ls_options.all || ls_options.almost_all) && file_name.starts_with(".");
 }
 
 fn print_dir<P>(path_arg: P, ls_options: &LsOptions, show_dir_name: bool) 
@@ -55,14 +55,26 @@ fn print_dir<P>(path_arg: P, ls_options: &LsOptions, show_dir_name: bool)
             print_file(entry.path(), ls_options);
         }
     }
-    println!("");
+    print!("\n\n");
+
+    if ls_options.recursive {
+        for entry in path.read_dir().expect("read_dir call failed") {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                let file_name = path.file_name().unwrap().to_str().unwrap();
+
+                if path.is_dir() && ! is_hidden_file(file_name, ls_options) {
+                    print_dir(entry.path(), ls_options, true);
+                }
+            }
+        }
+    }
 }
 
 fn print(matches: &Matches) -> Result<(), String> {
     let ls_options = LsOptions::new(matches);
     if matches.free.len() == 0 {
-        let current_dir = env::current_dir().unwrap();
-        print_dir(current_dir, &ls_options, false);
+        print_dir(Path::new("./"), &ls_options, false);
     } else {
         let argument_paths = matches.free.iter().map(|e| Path::new(e)).collect::<Vec<_>>();
         let show_dir_name = matches.free.len() > 1;

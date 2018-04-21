@@ -67,7 +67,7 @@ pub fn make_options() -> Options {
     // opts.optflag("i", "inode", "print the index number of each file");
     // opts.optflag("I", "ignore=PATTERN", "do not list implied entries matching shell PATTERN");
     // opts.optflag("k", "", "like --block-size=1K");
-    opts.optflag("l", "", "use a long listing format");
+    // opts.optflag("l", "", "use a long listing format");
     // opts.optflag("L", "dereference", "when showing file information for a symbolic \
     //                                     link, show information for the file the link \
     //                                     references rather than for the link itself");
@@ -84,7 +84,7 @@ pub fn make_options() -> Options {
     // opts.optflag("", "quoting-style=WORD", "use quoting style WORD for entry names: \
     //                                         literal, locale, shell, shell-always, c, escape");
     // opts.optflag("r", "reverse", "reverse order while sorting");
-    // opts.optflag("R", "recursive", "list subdirectories recursively");
+    opts.optflag("R", "recursive", "list subdirectories recursively");
     // opts.optflag("s", "size", "with -l, print size of each file, in blocks");
     // opts.optflag("S", "", "sort by file size");
     // opts.optflag("", "sort=WORD", "extension -X, none -U, size -S, time -t, \
@@ -121,7 +121,8 @@ pub fn make_options() -> Options {
 pub struct LsOptions {
     pub all: bool,
     pub almost_all: bool,
-    pub long_listing_format: bool,
+    // pub long_listing_format: bool,
+    pub recursive: bool,
 }
 
 impl LsOptions {
@@ -129,7 +130,8 @@ impl LsOptions {
         LsOptions {
             all: matches.opt_present("a"),
             almost_all: matches.opt_present("A"),
-            long_listing_format: matches.opt_present("l"),
+            // long_listing_format: matches.opt_present("l"),
+            recursive: matches.opt_present("R"),
         }
     }
 }
