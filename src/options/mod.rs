@@ -110,7 +110,7 @@ pub fn make_options() -> Options {
     // opts.optflag("w", "width=COLS", "assume screen width instead of current value");
     // opts.optflag("x", "", "list entries by lines instead of by columns");
     // opts.optflag("X", "", "sort alphabetically by entry extension");
-    // opts.optflag("1", "", "list one file per line");
+    opts.optflag("1", "", "list one file per line");
     // opts.optflag("", "append-exe", "append .exe if cygwin magic was needed");
     opts.optflag("", "help", "display this help and exit");
     opts.optflag("", "version", "output version information and exit");    
@@ -123,6 +123,7 @@ pub struct LsOptions {
     pub almost_all: bool,
     // pub long_listing_format: bool,
     pub recursive: bool,
+    pub one_file_per_line: bool,
 }
 
 impl LsOptions {
@@ -132,6 +133,7 @@ impl LsOptions {
             almost_all: matches.opt_present("A"),
             // long_listing_format: matches.opt_present("l"),
             recursive: matches.opt_present("R"),
+            one_file_per_line: matches.opt_present("1"),
         }
     }
 }

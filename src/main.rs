@@ -24,7 +24,10 @@ fn print_file_impl(file_name: &str, _meta: Option<Metadata>, ls_options: &LsOpti
     if is_hidden_file(file_name, ls_options) {
         return;
     }
-    print!("{}  ", file_name);   
+    print!("{}  ", file_name);
+    if ls_options.one_file_per_line {
+        print!("\n");
+    }
 }
 
 fn is_hidden_file(file_name: &str, ls_options: &LsOptions) -> bool {
@@ -62,7 +65,6 @@ fn print_dir<P>(path_arg: P, ls_options: &LsOptions, show_dir_name: bool)
             if let Ok(entry) = entry {
                 let path = entry.path();
                 let file_name = path.file_name().unwrap().to_str().unwrap();
-
                 if path.is_dir() && ! is_hidden_file(file_name, ls_options) {
                     print_dir(entry.path(), ls_options, true);
                 }
