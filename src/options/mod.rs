@@ -8,21 +8,25 @@ pub fn print_usage(program: &str, opts: Options) {
         List information about the FILEs (the current directory by default). \
         Sort entries alphabetically if none of -cftuvSUX nor --sort. \
         \
-        Mandatory arguments to long options are mandatory for short options too.", program);
+        Mandatory arguments to long options are mandatory for short options too.",
+        program
+    );
     print!("{}", opts.usage(&brief));
-    print!("\n\
-            SIZE may be (or may be an integer optionally followed by) one of following: \n\
-            kB 1000, K 1024, MB 1000*1000, M 1024*1024, and so on for G, T, P, E, Z, Y. \n\
-            By default, color is not used to distinguish types of files.  That is \n\
-            equivalent to using --color=none.  Using the --color option without the \n\
-            optional WHEN argument is equivalent to using --color=always.  With \n\
-            --color=auto, color codes are output only if standard output is connected \n\
-            to a terminal (tty).  The environment variable LS_COLORS can influence the \n\
-            colors, and can be set easily by the dircolors command. \n\
-            \n\
-            Exit status is 0 if OK, 1 if minor problems, 2 if serious trouble. \n\
-            \n\
-            Report bugs to <co1row.jp@gmail.com>.\n");
+    print!(
+        "\n\
+         SIZE may be (or may be an integer optionally followed by) one of following: \n\
+         kB 1000, K 1024, MB 1000*1000, M 1024*1024, and so on for G, T, P, E, Z, Y. \n\
+         By default, color is not used to distinguish types of files.  That is \n\
+         equivalent to using --color=none.  Using the --color option without the \n\
+         optional WHEN argument is equivalent to using --color=always.  With \n\
+         --color=auto, color codes are output only if standard output is connected \n\
+         to a terminal (tty).  The environment variable LS_COLORS can influence the \n\
+         colors, and can be set easily by the dircolors command. \n\
+         \n\
+         Exit status is 0 if OK, 1 if minor problems, 2 if serious trouble. \n\
+         \n\
+         Report bugs to <co1row.jp@gmail.com>.\n"
+    );
 }
 
 pub fn make_options() -> Options {
@@ -113,7 +117,7 @@ pub fn make_options() -> Options {
     opts.optflag("1", "", "list one file per line");
     // opts.optflag("", "append-exe", "append .exe if cygwin magic was needed");
     opts.optflag("", "help", "display this help and exit");
-    opts.optflag("", "version", "output version information and exit");    
+    opts.optflag("", "version", "output version information and exit");
     return opts;
 }
 
