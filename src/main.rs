@@ -1,7 +1,9 @@
 extern crate getopts;
+extern crate libc;
 use std::fs::Metadata;
 use std::env;
 use std::path::Path;
+use std::ffi::CString;
 use getopts::Matches;
 mod options;
 use options::LsOptions;
@@ -25,9 +27,19 @@ fn print_file_impl(file_name: &str, _meta: Option<Metadata>, ls_options: &LsOpti
     if is_hidden_file(file_name, ls_options) {
         return;
     }
+    if ls_options.long_listing_format {
+        unsafe {
+            let root = CString::new("/").unwrap();
+            let mut stat: libc::stat = std::mem::zeroed();
+            if libc::stat(root.as_ptr(), &mut stat) >= 0 {
+                println!("{}: {} {}", file_name, stat.st_uid, stat.st_gid);
+            }    
+        }
+    } else {
     print!("{}  ", file_name);
-    if ls_options.one_file_per_line {
-        print!("\n");
+        if ls_options.one_file_per_line {
+            print!("\n");
+        }
     }
 }
 

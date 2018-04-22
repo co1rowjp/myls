@@ -71,7 +71,7 @@ pub fn make_options() -> Options {
     // opts.optflag("i", "inode", "print the index number of each file");
     // opts.optflag("I", "ignore=PATTERN", "do not list implied entries matching shell PATTERN");
     // opts.optflag("k", "", "like --block-size=1K");
-    // opts.optflag("l", "", "use a long listing format");
+    opts.optflag("l", "", "use a long listing format");
     // opts.optflag("L", "dereference", "when showing file information for a symbolic \
     //                                     link, show information for the file the link \
     //                                     references rather than for the link itself");
@@ -125,7 +125,7 @@ pub fn make_options() -> Options {
 pub struct LsOptions {
     pub all: bool,
     pub almost_all: bool,
-    // pub long_listing_format: bool,
+    pub long_listing_format: bool,
     pub recursive: bool,
     pub one_file_per_line: bool,
 }
@@ -135,7 +135,7 @@ impl LsOptions {
         LsOptions {
             all: matches.opt_present("a"),
             almost_all: matches.opt_present("A"),
-            // long_listing_format: matches.opt_present("l"),
+            long_listing_format: matches.opt_present("l"),
             recursive: matches.opt_present("R"),
             one_file_per_line: matches.opt_present("1"),
         }
